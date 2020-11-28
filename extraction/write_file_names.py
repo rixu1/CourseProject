@@ -19,6 +19,11 @@ def main(dir_,out_file1,out_file2,dept_path,uni_path,names_path,url_path,loc_pat
 	with codecs.open(email_path,'r',encoding='utf-8',errors='ignore') as f:
 		emails = f.readlines()
 
+	with codecs.open("../data/interests",'r',encoding='utf-8',errors='ignore') as f:
+		interests = f.readlines()
+
+	with codecs.open("../data/phone_numbers",'r',encoding='utf-8',errors='ignore') as f:
+		phone_numbers = f.readlines()
 
 	max_len = 15
 	max_parts = 3
@@ -35,7 +40,7 @@ def main(dir_,out_file1,out_file2,dept_path,uni_path,names_path,url_path,loc_pat
 		corrected_names.append(corrected_name)
 
 
-	num_bios = len(os.listdir(dir_))-5
+	num_bios = 6525
 
 	print(emails[-2:],len(emails),len(corrected_names),len(locs),len(depts),len(unis),num_bios)
 
@@ -46,15 +51,23 @@ def main(dir_,out_file1,out_file2,dept_path,uni_path,names_path,url_path,loc_pat
 				f1.write('\n')
 				if emails[i]=='\n':
 					emails[i]='None'
+				if phone_numbers[i]=='\n':
+					phone_numbers[i]='None'
+				if interests[i]=='\n':
+					interests[i]='None'
 				f2.write(str(i)+'.txt'+'\t'
-					+unis[i].strip()+'\t'+depts[i].strip()+'\t'+corrected_names[i]+'\t'+urls[i].strip()+'\t'+locs[i].strip()+'\t'+emails[i].strip())
+					+unis[i].strip()+'\t'+depts[i].strip()+'\t'+corrected_names[i]+'\t'+urls[i].strip()+'\t'+locs[i].strip()+'\t'+emails[i].strip()+'\t'+interests[i].strip()+'\t'+phone_numbers[i].strip())
 				f2.write('\n')
 
 			f1.write('[None] '+str(num_bios-1)+'.txt')
 			if emails[num_bios-1]=='\n':
 					emails[num_bios-1]='None'
+			if phone_numbers[num_bios-1] == '\n':
+				phone_numbers[num_bios-1] = 'None'
+			if interests[num_bios-1] == '\n':
+				interests[num_bios-1] = 'None'
 			f2.write(str(num_bios-1)+'.txt'+'\t'
-				+unis[num_bios-1].strip()+'\t'+depts[num_bios-1].strip()+'\t'+corrected_names[num_bios-1]+'\t'+urls[num_bios-1].strip()+'\t'+locs[num_bios-1].strip()+'\t'+emails[num_bios-1].strip())
+				+unis[num_bios-1].strip()+'\t'+depts[num_bios-1].strip()+'\t'+corrected_names[num_bios-1]+'\t'+urls[num_bios-1].strip()+'\t'+locs[num_bios-1].strip()+'\t'+emails[num_bios-1].strip()+'\t'+interests[num_bios-1].strip()+'\t'+phone_numbers[num_bios-1].strip())
 
 	unis_dict = {"unis":sorted([uni.strip() for uni in list(set(unis))])}
 	all_countries = set()
@@ -77,7 +90,7 @@ def main(dir_,out_file1,out_file2,dept_path,uni_path,names_path,url_path,loc_pat
 	
 
 if __name__ == '__main__':
-	main('../data/compiled_bios','../compiled_bios/dataset-full-corpus.txt','../data/compiled_bios/metadata.dat','../data/depts','../data/unis','../data/names.txt','../data/urls','../data/location','../data/emails','../data/filter_data/unis.json','../data/filter_data/locs.json')
+	main('../data/compiled_bios','../data/compiled_bios/dataset-full-corpus.txt','../data/compiled_bios/metadata.dat','../data/depts','../data/unis','../data/names.txt','../data/urls','../data/location','../data/emails','../data/filter_data/unis.json','../data/filter_data/locs.json')
 
 
 

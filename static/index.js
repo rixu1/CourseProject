@@ -16,71 +16,114 @@ var docDiv = (doc) => {
     const fac_name = doc[5]
     const fac_url = doc[6]
     const loc = doc[7]+', '+doc[8]
+    const phone = doc[9]
+    const interests = doc[10]
 
+    let result = ``;
+    result = result + `
+    <div class="card">
+       <div class="card-header">
+         <div style="display: flex;">
+           <b style="font-size:14pt">${fac_name}</b>`
 
-
-    if (email =='None') {
-        return (
-             `<div class="card">
-             <div class="card-header">
-       <div style="display: flex;">
-
-        
-                 <b style="font-size:14pt">${fac_name}</b>
-                 <a style="margin-left:auto;color:black;" href=${fac_url} target="_blank"><i class="material-icons">launch</i></a>
-                 </div>
-
-            <div class="header-item">
-            <div class="tag">
-            <i class='fas fa-university' ></i>
-                  ${uni_dept}
-            </div>
-                <div class="tag">
-                  <i class="material-icons">location_on</i>
-                   ${loc}
-                 </div>
-            </div>
-            </div>
-           
-
-              <div class="card-body">
-                <span id='docPrev-${name}'>${prev}</span>
-                <br>
-            </div>
-            </div>`
-        );
-    } else {
-        return (
-            `<div class="card">
-             <div class="card-header">
-       <div style="display: flex;">
-
-        
-                 <b style="font-size:14pt">${fac_name}</b>
-                 <a style="margin-left:auto;color:black;margin-right:20px;" href='mailto:${email}' "><i class="material-icons">email</i></a>
-                 <a style="color:black;" href=${fac_url} target="_blank"><i class="material-icons">launch</i></a>
-                 </div>
-
-            <div class="header-item">
-            <div class="tag">
-            <i class='fas fa-university' ></i>
-                  ${uni_dept}
-            </div>
-                <div class="tag">
-                  <i class="material-icons">location_on</i>
-                   ${loc}
-                 </div>
-            </div>
-            </div>
-         
-
-              <div class="card-body">
-                <span id='docPrev-${name}'>${prev}</span>
-                <br>
-            </div>
-            </div>`
-        );
+    let iconBar = `<div style="margin-left: auto;">`;
+    if (email != 'None') {
+        iconBar += `
+           <a style="margin-left:auto;color:black;margin-right:20px;" href='mailto:${email}' "><i class="material-icons">email</i></a>`
     }
+    if (phone != 'None') {
+        iconBar += `
+           <a style="margin-left:auto;color:black;margin-right:20px;" href='tel:${phone}' "><i class="material-icons">phone</i></a>`
+    }
+    iconBar += `<a style="color:black;" href=${fac_url} target="_blank"><i class="material-icons">launch</i></a>`
+    iconBar += `</div>`
+    result += iconBar
+
+    result += `
+         </div>
+         <div class="header-item" style="flex-direction: column;">
+            <div class="tag">
+            <i class='fas fa-university' ></i>
+                  ${uni_dept}
+            </div>
+            <div class="tag">
+            <i class="material-icons">location_on</i>
+                  ${loc}
+            </div>
+            <div class="tag">
+            <i class="material-icons">label</i>
+                  ${interests}
+            </div>
+         </div>
+    </div>
+    <div class="card-body">
+        <span id='docPrev-${name}'>${prev}</span>
+        <br>
+    </div>
+    </div>`
+    return (result);
+    // if (email =='None') {
+    //     return (
+    //          `<div class="card">
+    //          <div class="card-header">
+    //    <div style="display: flex;">
+    //
+    //
+    //              <b style="font-size:14pt">${fac_name}</b>
+    //              <a style="margin-left:auto;color:black;" href=${fac_url} target="_blank"><i class="material-icons">launch</i></a>
+    //              </div>
+    //
+    //         <div class="header-item">
+    //         <div class="tag">
+    //         <i class='fas fa-university' ></i>
+    //               ${uni_dept}
+    //         </div>
+    //             <div class="tag">
+    //               <i class="material-icons">location_on</i>
+    //                ${loc}
+    //              </div>
+    //         </div>
+    //         </div>
+    //
+    //
+    //           <div class="card-body">
+    //             <span id='docPrev-${name}'>${prev}</span>
+    //             <br>
+    //         </div>
+    //         </div>`
+    //     );
+    // } else {
+    //     return (
+    //         `<div class="card">
+    //          <div class="card-header">
+    //    <div style="display: flex;">
+    //
+    //
+    //              <b style="font-size:14pt">${fac_name}</b>
+    //              <a style="margin-left:auto;color:black;margin-right:20px;" href='mailto:${email}' "><i class="material-icons">email</i></a>
+    //              <a style="color:black;" href=${fac_url} target="_blank"><i class="material-icons">launch</i></a>
+    //              </div>
+    //
+    //         <div class="header-item">
+    //         <div class="tag">
+    //         <i class='fas fa-university' ></i>
+    //               ${uni_dept}
+    //         </div>
+    //             <div class="tag">
+    //               <i class="material-icons">location_on</i>
+    //                ${loc}
+    //              </div>
+    //         </div>
+    //         </div>
+    //
+    //
+    //           <div class="card-body">
+    //             <span id='docPrev-${name}'>${prev}</span>
+    //             <br>
+    //         </div>
+    //         </div>`
+    //     );
+    // }
 }
 
 var doSearch = function() {
