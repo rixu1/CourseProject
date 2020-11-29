@@ -6,6 +6,24 @@ var selected_loc_filters = []
 var selected_uni_filters = []
 var searchTerm = ''
 
+function setCookie(cname, cvalue) {
+  document.cookie = cname + "=" + cvalue + ";";
+}
+
+function getCookie(cname) {
+  var name = cname + "=";
+  var ca = document.cookie.split(';');
+  for(var i = 0; i < ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
 
 
 var docDiv = (doc) => {
@@ -190,23 +208,73 @@ $(document).ready(function() {
     $(window).trigger('resize');
 });
 
-window.onload=function(){
-    for (var i=0;i<unis.length;i++){
-         var newOption = new Option(unis[i], i, false, false);
+window.onload=async function () {
+    console.log("here");
+    for (var i = 0; i < unis.length; i++) {
+        var newOption = new Option(unis[i], i, false, false);
         // Append it to the select
         $('#uni_filter').append(newOption).trigger('change');
-       
+
 
     }
     selected_uni_filters = unis.slice()
-    for (var i=0;i<locs.length;i++){
-         var newOption = new Option(locs[i], i, false, false);
+    for (var i = 0; i < locs.length; i++) {
+        var newOption = new Option(locs[i], i, false, false);
         // Append it to the select
         $('#loc_filter').append(newOption).trigger('change');
     }
     selected_loc_filters = locs.slice()
     $(window).trigger('resize');
- 
+
+    let pastSearches = ["nlp", "face"];
+
+    $("#docs-div").empty();
+    if (pastSearches.length <= 0) {
+        return;
+    }
+
+    $("#docs-div").append(`<h2 style="font-style: italic; font-size: 23px;">Recommended experts based on your search history...</h2>`);
+
+    for (var i = 0; i < pastSearches.length; i++) {
+        var keyword = pastSearches[i];
+        $("#docs-div").append(`<h3 style="font-size: 20px;color: #3D9970; font-family: monospace; margin-top: 20px;">search keyword: ${keyword}</h3>`);
+
+        const data = {
+            "query": keyword,
+            "num_results": 5,
+            "selected_loc_filters": selected_loc_filters,
+            "selected_uni_filters": selected_uni_filters
+        }
+        var num_fetched_res = 0
+        const response = await fetch("http://localhost:8095/search", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data)
+        });
+        const responseJson = await response.json();
+        //     response.json().then(data => {
+        const docs = responseJson.docs;
+        docs.forEach(doc => {
+            $("#docs-div").append(
+                docDiv(doc)
+            );
+                num_fetched_res = num_fetched_res+1;
+        });
+        //
+        // });
+    }
+
+    // docs.forEach(doc => {
+    //
+    //     $("#docs-div").append(
+    //         docDiv(doc)
+    //     );
+    //         num_fetched_res = num_fetched_res+1;
+    //
+    // });
+
 };
 
 function  toggleFilter() {
