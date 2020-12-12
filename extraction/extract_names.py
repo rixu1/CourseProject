@@ -6,8 +6,7 @@ def  main(st,bio_dir,name_path):
 	names = []
 	for i in range(len(os.listdir(bio_dir))-1):
 		with codecs.open(os.path.join(bio_dir,str(i)+'.txt'),'r',encoding='utf-8',errors='ignore') as f:
-			
- 			text = f.read()
+			text = f.read()
 		tokenized_text = word_tokenize(text)
 		classified_text = st.tag(tokenized_text)
 		found_name = False
@@ -31,12 +30,11 @@ def  main(st,bio_dir,name_path):
 		f.write(names[-1])
 
 
-
 if __name__ == '__main__':
-	st = StanfordNERTagger('../stanford-ner-2018-10-16/classifiers/english.all.3class.distsim.crf.ser.gz',
-					   '../stanford-ner-2018-10-16/stanford-ner.jar',
+	st = StanfordNERTagger('../stanford-ner-2020-11-17/classifiers/english.all.3class.distsim.crf.ser.gz',
+					   '../stanford-ner-2020-11-17/stanford-ner.jar',
 					   encoding='utf-8')
 	bio_dir = '../data/compiled_bios/'
-	name_path = '../data/names.txt'
-	main(st,bio_dir,name_path)
+	name_path = '../data/names_2020.txt'
+	main(st, bio_dir, name_path)
 

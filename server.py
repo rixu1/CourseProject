@@ -7,7 +7,7 @@ import requests
 import base64
 import sys
 import re
-
+import random
 
 app = Flask(__name__)
 environ = "development"
@@ -34,6 +34,48 @@ def admin():
     return render_template("admin.html")
 
 
+def filtered_recommend_results(
+    results, min_score, selected_uni_filters, selected_loc_filters
+):
+    filtered_results = []
+    universities = []
+    states = []
+    countries = []
+    index_list = []
+    count = 0
+
+    selected_universities = []
+    selected_states = []
+    selected_countries = []
+    selected_results = []
+    for res in results:
+        university = index.metadata(res[0]).get("university")
+        state = index.metadata(res[0]).get("state")
+        country = index.metadata(res[0]).get("country")
+        print index.metadata(res[0]).get("interest")
+        print index.metadata(res[0]).get("phone")
+        if (
+            (res[1] > min_score)
+            and (state in selected_loc_filters or country in selected_loc_filters)
+            and (university in selected_uni_filters)
+        ):
+            index_list.append(count)
+            filtered_results.append(res)
+            universities.append(university)
+            states.append(state)
+            countries.append(country)
+            count += 1
+
+    results_index = random.sample(index_list, min(len(index_list), 5))
+    for idx in results_index:
+        selected_results.append(filtered_results[idx])
+        selected_universities.append(universities[idx])
+        selected_states.append(states[idx])
+        selected_countries.append(countries[idx])
+
+    return selected_results, selected_universities, selected_states, selected_countries
+
+
 def filtered_results(
     results, num_results, min_score, selected_uni_filters, selected_loc_filters
 ):
@@ -42,7 +84,6 @@ def filtered_results(
     states = []
     countries = []
     res_cnt = 0
-    # print (selected_uni_filters,selected_loc_filters)
     for res in results:
         university = index.metadata(res[0]).get("university")
         state = index.metadata(res[0]).get("state")
@@ -87,6 +128,59 @@ def search():
 
     results, universities, states, countries = filtered_results(
         results, num_results, min_score, selected_uni_filters, selected_loc_filters
+    )
+
+    doc_names = [index.metadata(res[0]).get("doc_name") for res in results]
+    depts = [index.metadata(res[0]).get("department") for res in results]
+    fac_names = [index.metadata(res[0]).get("fac_name") for res in results]
+    fac_urls = [index.metadata(res[0]).get("fac_url") for res in results]
+
+    previews = _get_doc_previews(doc_names, querytext)
+    emails = [index.metadata(res[0]).get("email") for res in results]
+    phones = [index.metadata(res[0]).get("phone") for res in results]
+    interests = [index.metadata(res[0]).get("interest") for res in results]
+    docs = list(
+        zip(
+            doc_names,
+            previews,
+            emails,
+            universities,
+            depts,
+            fac_names,
+            fac_urls,
+            states,
+            countries,
+            phones,
+            interests,
+        )
+    )
+
+    return jsonify({"docs": docs})
+
+
+@app.route("/recommend", methods=["POST"])
+def recommend():
+    data = json.loads(request.data)
+    querytext = data["query"]
+    num_results = data["num_results"]
+    selected_loc_filters = data["selected_loc_filters"]
+    selected_uni_filters = data["selected_uni_filters"]
+
+    query = metapy.index.Document()
+    query.content(querytext)
+    min_score = 0.01
+
+    # Dynamically load the ranker
+    sys.path.append(app.rootpath + "/expertsearch")
+
+    from ranker import load_ranker
+
+    ranker = load_ranker(app.searchconfig)
+
+    results = ranker.score(index, query, 100)
+
+    results, universities, states, countries = filtered_recommend_results(
+        results, min_score, selected_uni_filters, selected_loc_filters
     )
 
     doc_names = [index.metadata(res[0]).get("doc_name") for res in results]

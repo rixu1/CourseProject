@@ -196,7 +196,7 @@ window.onload = async function() {
             "selected_uni_filters": selected_uni_filters
         }
         var num_fetched_res = 0
-        const response = await fetch("http://localhost:8095/search", {
+        const response = await fetch("http://localhost:8095/recommend", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
