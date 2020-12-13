@@ -56,11 +56,10 @@ Then you should be able to access http://localhost:8095/ from your browser. Chro
 ## Description of contribution of each team member
 
 Team member: Ri Xu  
-Responsible changes related to Flask servers and frontend javascript.
+Responsible changes related to Flask servers and frontend javascript.  
 Complete the Project Progress report.  
 
 Team member: Jinou Yang  
 Responsible for extraction scripts development and  improvements.  
-Demo video.
+Demo video.  
 Documentation.  
-
