@@ -1,6 +1,6 @@
 
 # Software Usage Tutorial Presentation
-Video link: 
+Video link:  https://www.youtube.com/watch?v=qGx1IDdoyLw
 
 # Documentation
 ## An overview of the function of the code
