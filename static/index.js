@@ -153,31 +153,13 @@ $(document).ready(function() {
     $(window).trigger('resize');
 });
 
-window.onload = async function() {
-    for (var i = 0; i < unis.length; i++) {
-        var newOption = new Option(unis[i], i, false, false);
-        // Append it to the select
-        $('#uni_filter').append(newOption).trigger('change');
-
-
-    }
-    selected_uni_filters = unis.slice()
-    for (var i = 0; i < locs.length; i++) {
-        var newOption = new Option(locs[i], i, false, false);
-        // Append it to the select
-        $('#loc_filter').append(newOption).trigger('change');
-    }
-    selected_loc_filters = locs.slice()
-    $(window).trigger('resize');
-
-    let history = getCookie("history");
+var recommend = async function() {
+        let history = getCookie("history");
     if (history === "") {
         return;
     }
     let splitList = history.split(",", 5);
     let pastSearches = splitList.reverse();
-    console.log("search history");
-    console.log(pastSearches);
     $("#docs-div").empty();
     if (pastSearches.length <= 0) {
         return;
@@ -212,6 +194,25 @@ window.onload = async function() {
             num_fetched_res = num_fetched_res + 1;
         });
     }
+}
+
+
+window.onload = async function() {
+    for (var i = 0; i < unis.length; i++) {
+        var newOption = new Option(unis[i], i, false, false);
+        // Append it to the select
+        $('#uni_filter').append(newOption).trigger('change');
+    }
+    selected_uni_filters = unis.slice()
+    for (var i = 0; i < locs.length; i++) {
+        var newOption = new Option(locs[i], i, false, false);
+        // Append it to the select
+        $('#loc_filter').append(newOption).trigger('change');
+    }
+    selected_loc_filters = locs.slice()
+    $(window).trigger('resize');
+
+    await recommend();
 };
 
 function toggleFilter() {

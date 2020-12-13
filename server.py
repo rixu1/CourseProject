@@ -15,9 +15,7 @@ dataconfig = json.loads(open("config.json", "r").read())
 app.dataenv = dataconfig[environ]
 app.rootpath = dataconfig[environ]["rootpath"]
 app.datasetpath = dataconfig[environ]["datasetpath"]
-print (dataconfig[environ]["datasetpath"])
 app.searchconfig = dataconfig[environ]["searchconfig"]
-print (dataconfig[environ]["searchconfig"])
 index = metapy.index.make_inverted_index(app.searchconfig)
 query = metapy.index.Document()
 uni_list = json.loads(open(dataconfig[environ]["unispath"], "r").read())["unis"]
