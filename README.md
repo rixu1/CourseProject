@@ -1,59 +1,59 @@
 # Documentation
 ## An overview of the function of the code
-The existing ExpertSearch system is a web application where users can search related experts. We’ve made several improvements to the existing system. To be more specific, the improvements include:
+The existing ExpertSearch system is a web application where users can search related experts. We’ve made several improvements to the existing system. To be more specific, the improvements include:  
 - Show experts’ areas of interests in search results preview.
 - Show experts’ phone number in search results preview.
 - Improve name matching; increase name recognition ratio from 88% to 96%. This reduces the chance when users see empty expert names in their search results.
 - Build a simple recommendation system based on users’ past search queries. Replace the empty home page with recommendation feed.
 
 ## How the software is implemented
-The web application is implemented in the following way:
+The web application is implemented in the following way:  
 
-`server.py`
-This is the main Flask server file which contains all backend APIs and page handlers.
+`server.py`  
+This is the main Flask server file which contains all backend APIs and page handlers.  
 - `/search` This API accepts a few parameters such as search query, number of results expected. Metapy library and BM25 is used to query the dataset, then fetch additional information from `metadata.dat` for frontend to display preview.
 - `/recommend` Similar to `/search`, this API accepts search query keywords and returns up to 5 recommended experts per query. BM25 is also used for finding experts to recommend. If more than 5 experts matched with a given query, 5 experts are randomly selected to encourage exploration. 
 
-`index.js`
-This is the main javascript file which contains most of the frontend logic.
+`index.js`  
+This is the main javascript file which contains most of the frontend logic.  
 - `recommend()` This function is called during `window.onload`. It reads users’ past search queries from browser cookies and talks with the backend (`/recommend` endpoint) to fetch recommended experts for each query term. Then it will display the experts’ preview for each search query. The latest search query will show up on the top of the feed.
 - `doSearch()` This function is called when users have clicked the search button. If the query is non-empty, it talks with the backend(/search endpoint) to fetch the results. It will also store users’ search query in the browser cookies for the recommendation system to pick up.
 - `docDiv()` This function will return a html div object given all preview data. It will render the expert's name, phone number, email, areas of interest, university information etc. It is used by both `recommend()` and `doSearch()` when rendering queried experts. Material icons ( https://material.io/icons/)  are used for visibility.
 - `setCookie()` and `getCookie()` These two helper functions are used for storing and retrieving cookies stored in the browser. In this case, users’ search keywords are stored in the `“history”` field in the format of comma separated strings.
 
-`extraction/extract_interest.py`
-This script is used to generate experts’ area of interests. Nltk, Gensim, SnowballStemmer are used for extraction. For each document, tokenization is performed followed by stemming and lemmatization. Then it uses nltk to run POS tagging on each token and extract all the noun words. Finally we run through all noun words with a predefined word mapping to compute the final areas of interests for all documents. Results are then exported to data/interests .
+`extraction/extract_interest.py`  
+This script is used to generate experts’ area of interests. Nltk, Gensim, SnowballStemmer are used for extraction. For each document, tokenization is performed followed by stemming and lemmatization. Then it uses nltk to run POS tagging on each token and extract all the noun words. Finally we run through all noun words with a predefined word mapping to compute the final areas of interests for all documents. Results are then exported to data/interests.  
 
-`extraction/extract_phone_number.py`
-This script is used to extract experts’ phone numbers. Regex pattern matching is used for phone-number extraction. Results are then exported to data/phone_numbers.
+`extraction/extract_phone_number.py`  
+This script is used to extract experts’ phone numbers. Regex pattern matching is used for phone-number extraction. Results are then exported to data/phone_numbers.  
 
-`extraction/extract_names.py` & `extract_names_spacy.py` & `merge_name.py`
-These three scripts are used to improve experts’ names extraction.
+`extraction/extract_names.py` & `extract_names_spacy.py` & `merge_name.py`  
+These three scripts are used to improve experts’ names extraction.  
 - We improved the original script `extract_names.py` to use the latest version of `stanford-ner`. Results are exported to `/data/names.txt`
 - In `extract_names_spacy.py`, we used the spacy NLP framework to run through all documents and extracted named entities. Results are exported to `/data/names_secondary.txt`
 - Finally we use `merge_name.py` to combine names from `/data/names.txt` and `/data/names_secondary.txt` . If we cannot find a name using `stanford-ner`, we will check and use the result from the secondary file. With both methods combined, we’re able to improve the name recognition coverage from 88% to 96%. Final results then exported to a new file `new_names.txt`.
 
-`extraction/write_file_names.py`
-This script combines all data files (interests/phone/email/names/…) generated by extraction scripts and writes to the dataset file `metadata.dat` for metapy to index and rank.
+`extraction/write_file_names.py`  
+This script combines all data files (interests/phone/email/names/…) generated by extraction scripts and writes to the dataset file `metadata.dat` for metapy to index and rank.  
 
 
 ## How to install and run a software
-To run the software, simply clone the repository from Github. There are a few dependency packages required to install. Following are the commands to run:
-pip install metapy
-pip install gunicorn 
-pip install spacy
-pip install nltk
-cd to /CourserProject
-gunicorn server:app -b 127.0.0.1:8095
+To run the software, simply clone the repository from Github. There are a few dependency packages required to install. Following are the commands to run:  
+pip install metapy  
+pip install gunicorn   
+pip install spacy  
+pip install nltk  
+cd to /CourserProject  
+gunicorn server:app -b 127.0.0.1:8095  
 Then you should be able to access http://localhost:8095/ from your browser. Chrome browser is recommended to use.
 
 ## Description of contribution of each team member
 
-Team member: Ri Xu
+Team member: Ri Xu  
 Responsible changes related to Flask servers and frontend javascript.
-Complete the Project Progress report.
+Complete the Project Progress report.  
 
-Team member: Jinou Yang
-Responsible for extraction scripts development and  improvements.
+Team member: Jinou Yang  
+Responsible for extraction scripts development and  improvements.  
 Demo video.
-Documentation.
+Documentation.  
